@@ -1,0 +1,50 @@
+.root {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0px 30px 0px 30px;
+  background-color: #fff !important;
+  border-radius: 0 !important;
+}
+
+.logo {
+  height: 30px;
+  width: 30px;
+}
+
+.inputBlock {
+  margin-left: 30px;
+  width: 300px;
+  height: 38px;
+  position: relative;
+
+  svg {
+    position: absolute;
+    top: 7px;
+    left: 8px;
+    opacity: 0.4;
+  }
+
+  input {
+    height: 38px;
+
+    padding-left: 40px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: rgba(0, 0, 0, 0.05);
+    transition: all 0.15s ease-in-out;
+    &:hover {
+      background-color: #fff;
+      border-color: darken(#fff4e2, 15%);
+      box-shadow: 0 0 0 3px rgb(229 160 64 / 12%);
+    }
+    &:focus {
+      outline: none;
+      background-color: #fff;
+      border-color: darken(#fff4e2, 30%);
+      box-shadow: 0 0 0 3px rgb(229 160 64 / 12%);
+    }
+  }
+}
