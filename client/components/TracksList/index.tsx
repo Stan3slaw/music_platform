@@ -12,9 +12,10 @@ const TracksList: React.FC<TracksListProps> = ({ tracks }) => {
   return (
     <Grid container direction='column'>
       <Box p={2}>
-        {tracks.map((track, index) => (
-          <TrackItem track={track} key={`${track.artist}_${index}`} />
-        ))}
+        {tracks &&
+          tracks?.map((track: ITrack, index: number) => (
+            <TrackItem track={track} key={`${track.artist}_${index}`} />
+          ))}
       </Box>
     </Grid>
   );

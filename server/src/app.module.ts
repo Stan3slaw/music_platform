@@ -5,6 +5,9 @@ import { CommentModule } from './comment/comment.module';
 import { FileModule } from './file/file.module';
 import { TrackModule } from './track/track.module';
 import * as path from 'path';
+import { ConfigModule } from '@nestjs/config';
+
+ConfigModule.forRoot();
 
 @Module({
   imports: [

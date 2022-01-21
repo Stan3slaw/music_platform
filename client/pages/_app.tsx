@@ -1,10 +1,13 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+
 import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 
 import '../styles/global.scss';
 import theme from '../styles/theme';
-import { ThemeProvider } from '@mui/material/styles';
+
+import { wrapper } from '../redux/store';
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -28,4 +31,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default App;
+export default wrapper.withRedux(App);

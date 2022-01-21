@@ -54,8 +54,4 @@ export class TrackService {
     track.listens += 1;
     track.save();
   }
-
-  buildResponse(track: Track) {
-    return { track };
-  }
 }

@@ -1,4 +1,4 @@
-import { Divider, Menu, MenuItem, Typography } from '@mui/material';
+import { Menu, MenuItem, Typography } from '@mui/material';
 import React from 'react';
 
 import { MoreHorizOutlined as MoreIcon } from '@mui/icons-material';

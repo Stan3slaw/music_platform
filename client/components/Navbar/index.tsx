@@ -5,8 +5,28 @@ import { SearchOutlined as SearchIcon } from '@mui/icons-material';
 
 import styles from './Navbar.module.scss';
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { NextThunkDispatch } from '../../redux/store';
+import { searchTrack } from '../../redux/actions/track';
 
 const Navbar: React.FC = () => {
+  const [query, setQuery] = React.useState('');
+  const [timer, setTimer] = React.useState(null as any);
+
+  const dispatch = useDispatch() as NextThunkDispatch;
+
+  const search = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    if (timer) {
+      clearTimeout(timer);
+    }
+    setTimer(
+      setTimeout(async () => {
+        await dispatch(await searchTrack(e.target.value));
+      }, 500),
+    );
+  };
+
   return (
     <Paper classes={{ root: styles.root }}>
       <Link href='/'>
@@ -28,7 +48,7 @@ const Navbar: React.FC = () => {
 
       <div className={styles.inputBlock}>
         <SearchIcon />
-        <input placeholder='Search' />
+        <input value={query} onChange={search} placeholder='Search' />
       </div>
     </Paper>
   );

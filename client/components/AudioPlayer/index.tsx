@@ -10,24 +10,80 @@ import {
 } from '@mui/icons-material';
 
 import styles from './AudioPlayer.module.scss';
+import { useTypedSelector } from '../../hooks/useTypedSelector';
+import { useActions } from '../../hooks/useActions';
+
+let audio: any;
 
 const AudioPlayer: React.FC = () => {
-  const active = true;
-  const duration = 200; // seconds
-  const [position, setPosition] = React.useState(32);
-  const [paused, setPaused] = React.useState(false);
+  const { pause, active, duration, currentTime, volume } = useTypedSelector(
+    (state) => state.player,
+  );
+  const { pauseTrack, playTrack, setVolume, setActiveTrack, setDuration, setCurrentTime } =
+    useActions();
+
+  React.useEffect(() => {
+    if (!audio) {
+      audio = new Audio();
+    } else {
+      setAudio();
+      play();
+    }
+  }, [active]);
+
+  const setAudio = () => {
+    if (active) {
+      audio.src = 'http://localhost:5000/' + active.audio;
+      audio.volume = volume / 100;
+      audio.onloadedmetadata = () => {
+        setDuration(Math.ceil(audio.duration));
+      };
+      audio.ontimeupdate = () => {
+        setCurrentTime(Math.ceil(audio.currentTime));
+      };
+    }
+  };
+
+  const play = () => {
+    if (pause) {
+      playTrack();
+      audio.play();
+    } else {
+      pauseTrack();
+      audio.pause();
+    }
+  };
+
+  const changeVolume = (_: any, value: any) => {
+    audio.volume = Number(value) / 100;
+    setVolume(Number(value as number));
+  };
+
+  const changeCurrentTime = (_: any, value: any) => {
+    audio.currentTime = Number(value);
+    setCurrentTime(Number(value as number));
+  };
+
   function formatDuration(value: number) {
     const minute = Math.floor(value / 60);
     const secondLeft = value - minute * 60;
-    return `${minute}:${secondLeft < 9 ? `0${secondLeft}` : secondLeft}`;
+    return `${minute}:${secondLeft <= 9 ? `0${secondLeft}` : secondLeft}`;
+  }
+
+  if (!active) {
+    return null;
   }
   return (
     <div className={styles.audioPlayer}>
       <IconButton>
         <PrevIcon color='primary' />
       </IconButton>
-      <IconButton>
-        {active ? <PlayArrow color='primary' fontSize='large' /> : <Pause color='primary' />}
+      <IconButton onClick={play}>
+        {pause ? (
+          <PlayArrow color='primary' fontSize='large' />
+        ) : (
+          <Pause color='primary' fontSize='large' />
+        )}
       </IconButton>
       <IconButton>
         <SkipIcon color='primary' />
@@ -35,23 +91,23 @@ const AudioPlayer: React.FC = () => {
 
       <Grid container direction='column' style={{ width: 200, margin: '0 20px' }}>
         <Box component='span' sx={{ color: 'white' }}>
-          name
+          {active?.name}
         </Box>
         <Box component='span' sx={{ fontSize: 12, color: '#a0a0a0' }}>
-          artist
+          {active?.artist}
         </Box>
       </Grid>
       <Typography sx={{ color: 'white', marginRight: '15px' }}>
-        {formatDuration(position)}
+        {formatDuration(currentTime)}
       </Typography>
       <Slider
         aria-label='time-indicator'
         size='small'
-        value={position}
+        value={currentTime}
         min={0}
         step={1}
         max={duration}
-        onChange={(_, value) => setPosition(value as number)}
+        onChange={changeCurrentTime}
         sx={{
           color: '#fff',
           height: 4,
@@ -76,12 +132,14 @@ const AudioPlayer: React.FC = () => {
         }}
       />
       <Typography sx={{ color: 'white', marginLeft: '15px', marginRight: '60px' }}>
-        -{formatDuration(duration - position)}
+        -{formatDuration(duration - currentTime)}
       </Typography>
       <VolumeIcon color='primary' />
       <Slider
         aria-label='Volume'
-        defaultValue={30}
+        defaultValue={0}
+        value={volume}
+        onChange={changeVolume}
         sx={{
           marginLeft: '15px',
           width: '200px',
@@ -102,10 +160,6 @@ const AudioPlayer: React.FC = () => {
           },
         }}
       />
-
-      {/* <TrackProgress left={currentTime} right={duration} onChange={changeCurrentTime} />
-      <VolumeUp style={{ marginLeft: 'auto' }} />
-      <TrackProgress left={volume} right={100} onChange={changeVolume} /> */}
     </div>
   );
 };

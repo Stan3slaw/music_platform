@@ -4,10 +4,11 @@ import { ITrack } from '../../types/track';
 import { Divider, Menu, MenuItem } from '@mui/material';
 import { Box } from '@mui/system';
 
-import { MoreHorizOutlined as MoreIcon } from '@mui/icons-material';
+import { Pause, PlayArrow, MoreHorizOutlined as MoreIcon } from '@mui/icons-material';
 
 import styles from './TrackItem.module.scss';
 import { useRouter } from 'next/router';
+import { useActions } from '../../hooks/useActions';
 
 interface TrackItemProps {
   track: ITrack;
@@ -16,8 +17,22 @@ interface TrackItemProps {
 
 const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
   const router = useRouter();
+
+  const { playTrack, pauseTrack, setActiveTrack } = useActions();
+
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const play = () => {
+    setActiveTrack(track);
+    playTrack();
+  };
+
+  const pause = () => {
+    pauseTrack();
+  };
+
   const handleClick = (event: any) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
   const onAddComment = () => {
@@ -38,13 +53,39 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
     }
   };
   return (
-    <Box className={styles.wrapper}>
-      <Box
-        component='img'
-        className={styles.trackImage}
-        alt='The house from the offer.'
-        src='https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2'
-      />
+    <Box className={styles.wrapper} onClick={play}>
+      <Box sx={{ position: 'relative' }}>
+        {!active ? (
+          <PlayArrow
+            color='disabled'
+            fontSize='large'
+            sx={{
+              position: 'absolute',
+              left: '10px',
+              top: '10px',
+              '&:hover': { color: '#ffd796' },
+            }}
+          />
+        ) : (
+          <Pause
+            color='disabled'
+            fontSize='large'
+            sx={{
+              position: 'absolute',
+              left: '10px',
+              top: '10px',
+              '&:hover': { color: '#ffd796' },
+            }}
+          />
+        )}
+        <Box
+          component='img'
+          className={styles.trackImage}
+          alt='picture'
+          src={'http://localhost:5000/' + track.picture}
+        />
+      </Box>
+
       <div className={styles.infoWrapper}>
         <Box className={styles.trackInfo}>
           <Box component='span' sx={{ fontSize: 18 }}>
@@ -87,7 +128,7 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
           <MenuItem onClick={handleClose}>Edit</MenuItem>
           <MenuItem onClick={onAddComment}>Add comment</MenuItem>
           <Divider />
-          <MenuItem>Listens: 55</MenuItem>
+          <MenuItem>{`Listens: ${track.listens}`}</MenuItem>
         </Menu>
       </div>
     </Box>
