@@ -75,7 +75,7 @@ const Create: NextPage = () => {
           Prev
         </Button>
         <Button variant='contained' onClick={next}>
-          Next
+          {activeStep === 2 ? 'Finish' : 'Next'}
         </Button>
       </Grid>
     </MainLayout>

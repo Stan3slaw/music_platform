@@ -21,6 +21,6 @@ export const setVolume = (payload: number): PlayerAction => {
   return { type: PlayerActionTypes.SET_VOLUME, payload };
 };
 
-export const setActiveTrack = (payload: ITrack): PlayerAction => {
+export const setActiveTrack = (payload: ITrack | null): PlayerAction => {
   return { type: PlayerActionTypes.SET_ACTIVE, payload };
 };

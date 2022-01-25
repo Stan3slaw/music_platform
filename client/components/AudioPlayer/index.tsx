@@ -15,12 +15,27 @@ import { useActions } from '../../hooks/useActions';
 
 let audio: any;
 
-const AudioPlayer: React.FC = () => {
+const AudioPlayer: React.FC = React.memo(function AudioPlayer() {
   const { pause, active, duration, currentTime, volume } = useTypedSelector(
     (state) => state.player,
   );
-  const { pauseTrack, playTrack, setVolume, setActiveTrack, setDuration, setCurrentTime } =
+  const { tracks } = useTypedSelector((state) => state.track);
+
+  const { pauseTrack, playTrack, setVolume, setDuration, setCurrentTime, setActiveTrack } =
     useActions();
+
+  const indexActiveTrack = tracks.findIndex((el) => el._id === active?._id);
+
+  React.useEffect(() => {
+    if (currentTime === duration) {
+      if (indexActiveTrack !== tracks.length - 1) {
+        pauseTrack();
+        setActiveTrack(tracks[indexActiveTrack + 1]);
+      } else {
+        pauseTrack();
+      }
+    }
+  }, [currentTime, duration]);
 
   React.useEffect(() => {
     if (!audio) {
@@ -54,6 +69,20 @@ const AudioPlayer: React.FC = () => {
     }
   };
 
+  const nextTrack = () => {
+    if (indexActiveTrack !== tracks.length - 1) {
+      pauseTrack();
+      setActiveTrack(tracks[indexActiveTrack + 1]);
+    }
+  };
+
+  const prevTrack = () => {
+    if (indexActiveTrack !== 0) {
+      pauseTrack();
+      setActiveTrack(tracks[indexActiveTrack - 1]);
+    }
+  };
+
   const changeVolume = (_: any, value: any) => {
     audio.volume = Number(value) / 100;
     setVolume(Number(value as number));
@@ -75,7 +104,7 @@ const AudioPlayer: React.FC = () => {
   }
   return (
     <div className={styles.audioPlayer}>
-      <IconButton>
+      <IconButton onClick={prevTrack}>
         <PrevIcon color='primary' />
       </IconButton>
       <IconButton onClick={play}>
@@ -85,11 +114,11 @@ const AudioPlayer: React.FC = () => {
           <Pause color='primary' fontSize='large' />
         )}
       </IconButton>
-      <IconButton>
+      <IconButton onClick={nextTrack}>
         <SkipIcon color='primary' />
       </IconButton>
 
-      <Grid container direction='column' style={{ width: 200, margin: '0 20px' }}>
+      <Grid container direction='column' style={{ width: 400, margin: '0 20px' }}>
         <Box component='span' sx={{ color: 'white' }}>
           {active?.name}
         </Box>
@@ -162,6 +191,6 @@ const AudioPlayer: React.FC = () => {
       />
     </div>
   );
-};
+});
 
 export default AudioPlayer;

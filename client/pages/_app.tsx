@@ -7,7 +7,9 @@ import { ThemeProvider } from '@mui/material/styles';
 import '../styles/global.scss';
 import theme from '../styles/theme';
 
-import { wrapper } from '../redux/store';
+import { NextThunkDispatch, wrapper } from '../redux/store';
+import { fetchTracks } from '../redux/actions/track';
+import AudioPlayer from '../components/AudioPlayer';
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -26,9 +28,22 @@ function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Component {...pageProps} />
+        <AudioPlayer />
       </ThemeProvider>
     </>
   );
 }
+
+App.getInitialProps = wrapper.getInitialAppProps((store) => async ({ ctx, Component }) => {
+  const dispatch = store.dispatch as NextThunkDispatch;
+  try {
+    await dispatch(await fetchTracks());
+  } catch (err) {
+    console.log(err);
+  }
+  return {
+    pageProps: Component.getInitialProps ? await Component.getInitialProps({ ...ctx, store }) : {},
+  };
+});
 
 export default wrapper.withRedux(App);

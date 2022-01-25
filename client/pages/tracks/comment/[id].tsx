@@ -31,7 +31,10 @@ const CommentPage = ({ serverTrack }: any) => {
   };
   return (
     <MainLayout hideSidebar>
-      <Button onClick={() => router.back()} variant='contained' sx={{ marginBottom: '30px' }}>
+      <Button
+        onClick={() => router.push('/tracks')}
+        variant='contained'
+        sx={{ marginBottom: '30px' }}>
         Back
       </Button>
       <Paper

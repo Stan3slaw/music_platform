@@ -1,7 +1,7 @@
 import React from 'react';
 import { ITrack } from '../../types/track';
 
-import { Divider, Menu, MenuItem } from '@mui/material';
+import { Divider, IconButton, Menu, MenuItem } from '@mui/material';
 import { Box } from '@mui/system';
 
 import { Pause, PlayArrow, MoreHorizOutlined as MoreIcon } from '@mui/icons-material';
@@ -9,6 +9,8 @@ import { Pause, PlayArrow, MoreHorizOutlined as MoreIcon } from '@mui/icons-mate
 import styles from './TrackItem.module.scss';
 import { useRouter } from 'next/router';
 import { useActions } from '../../hooks/useActions';
+import { useDispatch } from 'react-redux';
+import { deleteTrack } from '../../redux/actions/track';
 
 interface TrackItemProps {
   track: ITrack;
@@ -17,6 +19,7 @@ interface TrackItemProps {
 
 const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const { playTrack, pauseTrack, setActiveTrack } = useActions();
 
@@ -31,9 +34,9 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
     pauseTrack();
   };
 
-  const handleClick = (event: any) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
+  const handleClick = (e: any) => {
+    e.stopPropagation();
+    setAnchorEl(e.currentTarget);
   };
   const onAddComment = () => {
     router.push('/tracks/comment/' + track._id);
@@ -42,42 +45,32 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
     setAnchorEl(null);
   };
 
-  const handleRemove = async () => {
-    if (window.confirm('Удалить коментарий?')) {
+  const handleRemove = () => {
+    if (window.confirm('Delete track?')) {
       try {
+        dispatch(deleteTrack(track._id));
+        dispatch(setActiveTrack(null));
       } catch (err) {
-        console.warn('Error removing comment', err);
+        console.warn('Error removing track', err);
       } finally {
         handleClose();
       }
     }
   };
   return (
-    <Box className={styles.wrapper} onClick={play}>
+    <Box className={styles.wrapper}>
       <Box sx={{ position: 'relative' }}>
-        {!active ? (
-          <PlayArrow
-            color='disabled'
-            fontSize='large'
-            sx={{
-              position: 'absolute',
-              left: '10px',
-              top: '10px',
-              '&:hover': { color: '#ffd796' },
-            }}
-          />
-        ) : (
-          <Pause
-            color='disabled'
-            fontSize='large'
-            sx={{
-              position: 'absolute',
-              left: '10px',
-              top: '10px',
-              '&:hover': { color: '#ffd796' },
-            }}
-          />
-        )}
+        <IconButton
+          onClick={play}
+          sx={{
+            position: 'absolute',
+            left: '2.3px',
+            top: '2.3px',
+            '&:hover': { color: '#ffd796' },
+          }}>
+          <PlayArrow color='disabled' fontSize='large' />
+        </IconButton>
+
         <Box
           component='img'
           className={styles.trackImage}

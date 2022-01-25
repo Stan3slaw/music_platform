@@ -9,13 +9,17 @@ import { Add as AddIcon, PlayArrow as PlayIcon } from '@mui/icons-material';
 import MainLayout from '../../layouts/MainLayout';
 import TracksList from '../../components/TracksList';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
-import { wrapper, NextThunkDispatch } from '../../redux/store';
-import { fetchTracks } from '../../redux/actions/track';
+import { useActions } from '../../hooks/useActions';
 
 const Tracks: NextPage = () => {
   const router = useRouter();
   const { tracks, error } = useTypedSelector((state) => state.track);
-  console.log(tracks);
+  const { playTrack, setActiveTrack } = useActions();
+
+  const play = () => {
+    setActiveTrack(tracks[0]);
+    playTrack();
+  };
   if (error) {
     return (
       <MainLayout>
@@ -35,7 +39,7 @@ const Tracks: NextPage = () => {
             height: 'calc(100vh - 80px)',
           }}>
           <Grid container justifyContent='space-between' sx={{ marginBottom: '20px' }}>
-            <Button variant='contained'>
+            <Button onClick={play} variant='contained'>
               <PlayIcon sx={{ marginRight: '3px' }} />
               Play
             </Button>
@@ -51,13 +55,5 @@ const Tracks: NextPage = () => {
     </MainLayout>
   );
 };
-
-export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
-  const dispatch = store.dispatch as NextThunkDispatch;
-  await dispatch(await fetchTracks());
-  return {
-    props: {},
-  };
-});
 
 export default Tracks;

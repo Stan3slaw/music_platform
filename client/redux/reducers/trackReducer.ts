@@ -11,6 +11,10 @@ export const trackReducer = (state = initialState, action: TrackAction): TrackSt
       return { error: '', tracks: action.payload };
     case TrackActionTypes.FETCH_TRACKS_ERROR:
       return { ...state, error: action.payload };
+    case TrackActionTypes.DELETE_TRACK:
+      return { ...state, tracks: action.payload };
+    case TrackActionTypes.DELETE_TRACK_ERORR:
+      return { ...state, error: action.payload };
     default:
       return state;
   }
