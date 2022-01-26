@@ -38,9 +38,16 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
     e.stopPropagation();
     setAnchorEl(e.currentTarget);
   };
+
   const onAddComment = () => {
     router.push('/tracks/comment/' + track._id);
   };
+
+  const onUpdate = () => {
+    dispatch(setActiveTrack(null));
+    router.push('/tracks/update/' + track._id);
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -118,7 +125,7 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
           onClose={handleClose}
           keepMounted>
           <MenuItem onClick={handleRemove}>Delete</MenuItem>
-          <MenuItem onClick={handleClose}>Edit</MenuItem>
+          <MenuItem onClick={onUpdate}>Edit</MenuItem>
           <MenuItem onClick={onAddComment}>Add comment</MenuItem>
           <Divider />
           <MenuItem>{`Listens: ${track.listens}`}</MenuItem>

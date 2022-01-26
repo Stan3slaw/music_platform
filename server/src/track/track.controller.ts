@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -17,6 +18,7 @@ import { TrackService } from './track.service';
 
 import { ObjectId } from 'mongoose';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { UpdateTrackDto } from './dto/updateTrack.dto';
 
 @Controller('/tracks')
 export class TrackController {
@@ -30,9 +32,30 @@ export class TrackController {
     ]),
   )
   @UsePipes(new ValidationPipe())
-  async create(@UploadedFiles() files, @Body() createTrackDto: CreateTrackDto) {
+  create(@UploadedFiles() files, @Body() createTrackDto: CreateTrackDto) {
     const { picture, audio } = files;
     return this.trackService.create(createTrackDto, picture[0], audio[0]);
+  }
+
+  @Patch(':id')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'picture', maxCount: 1 },
+      { name: 'audio', maxCount: 1 },
+    ]),
+  )
+  @UsePipes(new ValidationPipe())
+  update(
+    @Param('id') id: ObjectId,
+    @UploadedFiles() files,
+    @Body() updateTrackDto: UpdateTrackDto,
+  ) {
+    return this.trackService.update(
+      id,
+      updateTrackDto,
+      files?.picture,
+      files?.audio,
+    );
   }
 
   @Get()

@@ -25,6 +25,24 @@ export class FileService {
     }
   }
 
+  updateFile(file: string, type: FileType, updatedFile): string {
+    try {
+      const removeFilePath = path.resolve(__dirname, '..', 'static', file);
+      fs.unlinkSync(removeFilePath);
+
+      const fileExtension = updatedFile.originalname.split('.').pop();
+      const fileName = uuid.v4() + '.' + fileExtension;
+      const filePath = path.resolve(__dirname, '..', 'static', type);
+      if (!fs.existsSync(filePath)) {
+        fs.mkdirSync(filePath, { recursive: true });
+      }
+      fs.writeFileSync(path.resolve(filePath, fileName), updatedFile.buffer);
+      return type + '/' + fileName;
+    } catch (err) {
+      throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   removeFile(fileName: string) {
     try {
       const filePath = path.resolve(__dirname, '..', 'static', fileName);

@@ -4,14 +4,16 @@ import React from 'react';
 import { MoreHorizOutlined as MoreIcon } from '@mui/icons-material';
 
 import styles from './Comment.module.scss';
+import axios from 'axios';
 
 interface CommentProps {
   id: string;
   text: string;
   username: string;
+  onRemove: (id: number) => void;
 }
 
-export const Comment: React.FC<CommentProps> = ({ id, text, username }) => {
+export const Comment: React.FC<CommentProps> = ({ id, text, username, onRemove }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -21,8 +23,10 @@ export const Comment: React.FC<CommentProps> = ({ id, text, username }) => {
   };
 
   const handleRemove = async () => {
-    if (window.confirm('Удалить коментарий?')) {
+    if (window.confirm('Delete comment?')) {
       try {
+        const { data } = await axios.delete(`http://localhost:5000/tracks/comment/${id}`);
+        onRemove(data._id);
       } catch (err) {
         console.warn('Error removing comment', err);
       } finally {
@@ -70,7 +74,6 @@ export const Comment: React.FC<CommentProps> = ({ id, text, username }) => {
         onClose={handleClose}
         keepMounted>
         <MenuItem onClick={handleRemove}>Delete</MenuItem>
-        <MenuItem onClick={handleClose}>Edit</MenuItem>
       </Menu>
     </div>
   );

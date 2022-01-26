@@ -15,7 +15,6 @@ import styles from './Sidebar.module.scss';
 const menu = [
   { text: 'Home', icon: <HomeIcon />, path: '/' },
   { text: 'Tracks', icon: <FireIcon />, path: '/tracks' },
-  { text: 'Albums', icon: <ListIcon />, path: '/albums' },
 ];
 
 const Sidebar: React.FC = () => {

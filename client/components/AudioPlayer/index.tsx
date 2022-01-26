@@ -12,6 +12,7 @@ import {
 import styles from './AudioPlayer.module.scss';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
 import { useActions } from '../../hooks/useActions';
+import axios from 'axios';
 
 let audio: any;
 
@@ -28,6 +29,7 @@ const AudioPlayer: React.FC = React.memo(function AudioPlayer() {
 
   React.useEffect(() => {
     if (currentTime === duration) {
+      axios.post(`http://localhost:5000/tracks/listen/${active?._id}`);
       if (indexActiveTrack !== tracks.length - 1) {
         pauseTrack();
         setActiveTrack(tracks[indexActiveTrack + 1]);

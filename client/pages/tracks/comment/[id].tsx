@@ -29,6 +29,13 @@ const CommentPage = ({ serverTrack }: any) => {
       console.log(err);
     }
   };
+  const onRemoveComment = (id: number) => {
+    setTrack((prev: any) => {
+      const comments = prev.comments.filter((obj: any) => obj._id !== id);
+      return { ...track, comments: comments };
+    });
+  };
+
   return (
     <MainLayout hideSidebar>
       <Button
@@ -84,6 +91,7 @@ const CommentPage = ({ serverTrack }: any) => {
               id={item._id}
               text={item.text}
               username={item.username}
+              onRemove={onRemoveComment}
             />
           ))}
         </div>

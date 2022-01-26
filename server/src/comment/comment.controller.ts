@@ -1,12 +1,18 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
+import { ObjectId } from 'mongoose';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/createComment.dto';
 
-@Controller()
+@Controller('/tracks/comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
-  @Post('/tracks/comment')
+  @Post()
   create(@Body() createCommentDto: CreateCommentDto) {
     return this.commentService.create(createCommentDto);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: ObjectId) {
+    return this.commentService.delete(id);
   }
 }
