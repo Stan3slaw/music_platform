@@ -9,6 +9,12 @@ Used technologies: [NestJs](https://nestjs.com/), [ReactJs](https://reactjs.org/
 
 ## Setting up MONGODB_URL
 
+```bash
+Go to -> backend/
+Create -> .env
+And paste -> MONGODB_URL = Your MongoDB url
+```
+
 ## Installation and running backend
 
 ```bash
